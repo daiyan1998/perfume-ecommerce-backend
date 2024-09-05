@@ -157,10 +157,11 @@ const getUserByID = asyncHandler(async (req, res) => {
 // @route   PUT api/users/:id
 // @access  Private / Admin
 const updateUser = asyncHandler(async (req, res) => {
-  const { name, email, isAdmin } = req.body;
+  const { name, email, isAdmin, id } = req.body;
 
-  const user = await User.findById(req.params.id);
-
+  const user = await User.findById(id);
+  if (user.email === "admin@email.com" && user.isAdmin === true)
+    throw new Error("Can't change super admin details");
   if (user) {
     user.name = name || user.name;
     user.email = email || user.email;
