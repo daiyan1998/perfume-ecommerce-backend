@@ -18,10 +18,7 @@ connectDB(); // connect to MongoDB
 const app = express();
 
 const corsOptions = {
-  origin: [
-    "http://localhost:3000",
-    "https://perfume-ecommerce-frontend.vercel.app/",
-  ],
+  origin: "*",
   credentials: true,
 };
 app.use(cors(corsOptions));
