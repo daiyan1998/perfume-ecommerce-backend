@@ -5,8 +5,30 @@ import Product from "../models/productModel.js";
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find();
-  res.json(products);
+  const { name, category, brand, minPrice, maxPrice, sortBy } = req.query;
+  const pageSize = 5;
+  const page = Number(req.query.pageNumber) || 1;
+  const count = await Product.countDocuments();
+
+  let query = {};
+
+  if (name) {
+    query.name = { $regex: name, $options: "i" };
+  }
+
+  if (category) {
+    query.category = category;
+  }
+
+  if (brand) {
+    query.brand = brand;
+  }
+
+  const products = await Product.find(query)
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
+  res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
 // @desc    Fetch a product
